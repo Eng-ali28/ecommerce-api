@@ -10,9 +10,7 @@ const errorMiddleWare = (err, req, res, next) => {
 const sendDev = (err, res) => {
   return res.status(err.statusCode).json({
     message: err.message,
-    statusCode: err.statusCode,
-    status: err.status,
-    isOperational: err.operational,
+    err,
     stack: err.stack,
   });
 };

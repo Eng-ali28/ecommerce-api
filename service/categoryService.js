@@ -5,7 +5,7 @@ const slugify = require("slugify");
 //@desc get all categories
 //@route GET /api/v1/categroies?page=x&limit=x
 //@access Pubilc
-exports.addCategory = asyncHandler(async (req, res, next) => {
+exports.addCategory = asyncHandler(async (req, res) => {
   const page = req.query.page * 1 || 1;
   const limit = req.query.limit * 1 || 4;
   const skip = (page - 1) * limit;

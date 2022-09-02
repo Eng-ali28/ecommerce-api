@@ -1,5 +1,10 @@
 const router = require("express").Router();
-
+const {
+  getCategoryRules,
+  createCategoryRules,
+  updateCategoryRules,
+  deleteCategoryRules,
+} = require("../utils/validator/categoryValidator");
 const {
   addCategory,
   createCategory,
@@ -8,10 +13,10 @@ const {
   deleteCategory,
 } = require("../service/categoryService");
 
-router.route("/").get(addCategory).post(createCategory);
+router.route("/").get(addCategory).post(createCategoryRules, createCategory);
 router
   .route("/:id")
-  .get(getCategoryById)
-  .put(updateCategory)
-  .delete(deleteCategory);
+  .get(getCategoryRules, getCategoryById)
+  .put(updateCategoryRules, updateCategory)
+  .delete(deleteCategoryRules, deleteCategory);
 module.exports = router;
