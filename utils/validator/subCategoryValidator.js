@@ -28,3 +28,31 @@ exports.getSpecificSubCategoryValidator = [
     .withMessage("id cant not be empty"),
   validatorMW,
 ];
+
+// @desc validat update subcategory
+exports.updateSubCategoryValidator = [
+  check("id")
+    .isMongoId()
+    .withMessage("Invalid id !")
+    .notEmpty()
+    .withMessage("Id can not be empty"),
+  check("name")
+    .trim()
+    .notEmpty()
+    .withMessage("name can not be empty")
+    .isLength({ min: 2 })
+    .withMessage("name is too short !")
+    .isLength({ max: 32 })
+    .withMessage("name is too long !"),
+  check("category")
+    .notEmpty()
+    .withMessage("category can not be empty")
+    .isMongoId()
+    .withMessage("Invalid id !"),
+  validatorMW,
+];
+
+exports.deleteSubCategoryValidator = [
+  check("id").isMongoId().withMessage("Invalid id !"),
+  validatorMW,
+];

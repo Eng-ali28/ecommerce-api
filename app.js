@@ -9,6 +9,7 @@ dotenv.config({
 
 const categoryRouter = require("./routes/categoryRouter");
 const subCategoryRouter = require("./routes/subCategoryRouter");
+const brandsRouter = require("./routes/brandRouter");
 const connectToDatabase = require("./config/database");
 const ApiError = require("./utils/ApiError");
 const errorMiddleWare = require("./middleware/errorMiddleware");
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === "development") {
 //routes
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/subcategories", subCategoryRouter);
+app.use("/api/v1/brands", brandsRouter);
 app.all("*", (req, res, next) => {
   next(new ApiError(`this url not exists ${req.originalUrl}`, 404));
 });
