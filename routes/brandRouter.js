@@ -11,10 +11,20 @@ const {
   getbrandById,
   updatebrand,
   deletebrand,
+  imageProcessor,
 } = require("../service/brandServices");
+const { uploadSingleImage } = require("../middleware/uploadImage");
 // const subbrandRoute = require("./subbrandRouter");
 
-router.route("/").get(getBrands).post(createbrandRules, createbrand);
+router
+  .route("/")
+  .get(getBrands)
+  .post(
+    uploadSingleImage("image"),
+    imageProcessor,
+    createbrandRules,
+    createbrand
+  );
 // router.use("/:brandId/subcategories", subbrandRoute);
 router
   .route("/:id")

@@ -11,14 +11,30 @@ const {
   getCategoryById,
   updateCategory,
   deleteCategory,
+  upload,
+  categoryImage,
 } = require("../service/categoryService");
+const { uploadSingleImage } = require("../middleware/uploadImage");
 const subCategoryRoute = require("./subCategoryRouter");
 
-router.route("/").get(addCategory).post(createCategoryRules, createCategory);
+router
+  .route("/")
+  .get(addCategory)
+  .post(
+    uploadSingleImage("image"),
+    categoryImage,
+    createCategoryRules,
+    createCategory
+  );
 router.use("/:categoryId/subcategories", subCategoryRoute);
 router
   .route("/:id")
   .get(getCategoryRules, getCategoryById)
-  .put(updateCategoryRules, updateCategory)
+  .put(
+    uploadSingleImage("image"),
+    categoryImage,
+    updateCategoryRules,
+    updateCategory
+  )
   .delete(deleteCategoryRules, deleteCategory);
 module.exports = router;

@@ -1,3 +1,4 @@
+const path = require("path");
 /* eslint-disable no-undef */
 const express = require("express");
 const dotenv = require("dotenv");
@@ -10,6 +11,7 @@ dotenv.config({
 const categoryRouter = require("./routes/categoryRouter");
 const subCategoryRouter = require("./routes/subCategoryRouter");
 const brandsRouter = require("./routes/brandRouter");
+const productRouter = require("./routes/productRoute");
 const connectToDatabase = require("./config/database");
 const ApiError = require("./utils/ApiError");
 const errorMiddleWare = require("./middleware/errorMiddleware");
@@ -20,6 +22,7 @@ connectToDatabase();
 const app = express();
 //middleware section
 app.use(express.json());
+app.use(express.static(path.join(__dirname, "uploads")));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
@@ -28,6 +31,7 @@ if (process.env.NODE_ENV === "development") {
 app.use("/api/v1/categories", categoryRouter);
 app.use("/api/v1/subcategories", subCategoryRouter);
 app.use("/api/v1/brands", brandsRouter);
+app.use("/api/v1/products", productRouter);
 app.all("*", (req, res, next) => {
   next(new ApiError(`this url not exists ${req.originalUrl}`, 404));
 });

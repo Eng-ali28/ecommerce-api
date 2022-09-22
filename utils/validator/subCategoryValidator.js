@@ -1,6 +1,6 @@
 const validatorMW = require("../../middleware/validatorMiddleware");
 const { check } = require("express-validator");
-
+const slugify = require("slugify");
 // @desc validat for create subcategory
 exports.createSubCategoryValidator = [
   check("name")
@@ -10,7 +10,11 @@ exports.createSubCategoryValidator = [
     .isLength({ min: 2 })
     .withMessage("name is too short")
     .isLength({ max: 32 })
-    .withMessage("name is too long"),
+    .withMessage("name is too long")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
   check("category")
     .notEmpty()
     .withMessage("category is required")
@@ -43,7 +47,14 @@ exports.updateSubCategoryValidator = [
     .isLength({ min: 2 })
     .withMessage("name is too short !")
     .isLength({ max: 32 })
-    .withMessage("name is too long !"),
+    .withMessage("name is too long !")
+    .custom((val, { req }) => {
+      if (!req.body.name) {
+        return Promise.reject("name is required !");
+      }
+      req.body.slug = slugify(val);
+      return true;
+    }),
   check("category")
     .notEmpty()
     .withMessage("category can not be empty")

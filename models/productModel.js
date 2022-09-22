@@ -8,7 +8,7 @@ const productSchema = new Schema(
       required: true,
       trim: true,
       minlength: [3, "title too short !"],
-      maxlength: [32, "title too long"],
+      maxlength: [320, "title too long"],
     },
     slug: {
       type: String,
@@ -31,7 +31,7 @@ const productSchema = new Schema(
     price: {
       type: Number,
       required: [true, "price is required"],
-      maxlength: [20, "price is not allowed"],
+      max: [2000000, "price is not allowed"],
       trim: true,
     },
     priceAfterDiscount: {
@@ -43,9 +43,8 @@ const productSchema = new Schema(
         required: [true, "color is required"],
       },
     ],
-    imageCovered: {
+    imageCover: {
       type: String,
-      required: [true, "image covered is required"],
     },
     images: [String],
     category: {
@@ -57,7 +56,6 @@ const productSchema = new Schema(
       {
         type: Schema.Types.ObjectId,
         ref: "subCategory",
-        required: [true, "subcategory is required"],
       },
     ],
     brand: {
@@ -77,4 +75,23 @@ const productSchema = new Schema(
   },
   { timestamps: true }
 );
+productSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "category",
+    select: "name -_id",
+  });
+  next();
+});
+function setUrl(doc) {
+  if (doc.imageCover) {
+    doc.imageCover = `${process.env.BASE_URL}/products/${doc.imageCover}`;
+  }
+  if (doc.images) {
+    doc.images = doc.images.map((image) => {
+      return `${process.env.BASE_URL}/products/${image}`;
+    });
+  }
+}
+productSchema.post("init", (doc) => setUrl(doc));
+productSchema.post("save", (doc) => setUrl(doc));
 module.exports = mongoose.model("product", productSchema);
