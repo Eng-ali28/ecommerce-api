@@ -13,6 +13,7 @@ const {
   deletebrand,
   imageProcessor,
 } = require("../service/brandServices");
+const { protect, getRoles } = require("../service/authService");
 const { uploadSingleImage } = require("../middleware/uploadImage");
 // const subbrandRoute = require("./subbrandRouter");
 
@@ -20,6 +21,8 @@ router
   .route("/")
   .get(getBrands)
   .post(
+    protect,
+    getRoles("admin", "manager"),
     uploadSingleImage("image"),
     imageProcessor,
     createbrandRules,
@@ -29,6 +32,6 @@ router
 router
   .route("/:id")
   .get(getbrandRules, getbrandById)
-  .put(updatebrandRules, updatebrand)
-  .delete(deletebrandRules, deletebrand);
+  .put(protect, getRoles("admin", "manager"), updatebrandRules, updatebrand)
+  .delete(protect, getRoles("admin"), deletebrandRules, deletebrand);
 module.exports = router;

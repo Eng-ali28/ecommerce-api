@@ -3,6 +3,7 @@ const validationResultMW = require("../../middleware/validatorMiddleware");
 const ApiError = require("../ApiError");
 const bcrypt = require("bcryptjs");
 const User = require("../../models/userModel");
+const { default: slugify } = require("slugify");
 exports.createValidator = [
   check("name")
     .trim()
@@ -93,5 +94,40 @@ exports.updatePasswordValidator = [
       return true;
     }),
   check("confirmNewPassword").notEmpty().withMessage("can't be empty"),
+  validationResultMW,
+];
+
+// logged user
+exports.updateLoggedUserVal = [
+  check("name")
+    .trim()
+    .optional()
+    .isLength({ min: 2 })
+    .withMessage("name is too short")
+    .custom((val, { req }) => {
+      req.body.slug = slugify(val);
+      return true;
+    }),
+  check("email")
+    .trim()
+    .optional()
+    .isEmail()
+    .withMessage("Invalid email")
+    .custom((val) => {
+      return User.findOne({ email: val }).then((user) => {
+        if (user) {
+          if (user.email == val) {
+            return Promise.reject("This email is already in use");
+          }
+          return Promise.reject("E-mail has exists");
+        }
+        return true;
+      });
+    }),
+  check("phone")
+    .trim()
+    .optional()
+    .isMobilePhone(["ar-SY"])
+    .withMessage("Ivalid syrian number"),
   validationResultMW,
 ];

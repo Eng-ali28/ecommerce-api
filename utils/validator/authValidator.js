@@ -57,8 +57,6 @@ exports.loginValidator = [
     .notEmpty()
     .withMessage("password is required")
     .isLength({ min: 8 })
-    .withMessage("password is too short")
-    .isLength({ max: 32 })
-    .withMessage("password is too long"),
+    .withMessage("password is too short"),
   validatorMW,
 ];

@@ -16,11 +16,14 @@ const {
   updateProductVM,
   deleteProductVM,
 } = require("../utils/validator/productValidator");
+const { protect, getRoles } = require("../service/authService");
 const { uploadMixImages } = require("../middleware/uploadImage");
 router
   .route("/")
   .get(getAllProducts)
   .post(
+    protect,
+    getRoles("admin", "manager"),
     uploadMixImages([
       { name: "imageCover", maxCount: 1 },
       { name: "images", maxCount: 5 },

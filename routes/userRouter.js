@@ -8,6 +8,7 @@ const {
   imageProcessor,
   updatePassword,
 } = require("../service/userService");
+const { protect, getRoles } = require("../service/authService");
 const { uploadSingleImage } = require("../middleware/uploadImage");
 const {
   createValidator,
@@ -16,6 +17,7 @@ const {
   deleteValidator,
   updatePasswordValidator,
 } = require("../utils/validator/userValidator");
+router.use(protect, getRoles("admin"));
 router
   .route("/")
   .get(getUsers)
@@ -30,5 +32,10 @@ router
   .get(getValidator, getUserById)
   .put(updateValidator, updateUser)
   .delete(deleteValidator, deleteUser);
-router.patch("/:id/updatepassword", updatePasswordValidator, updatePassword);
+router.patch(
+  "/:id/updatepassword",
+
+  updatePasswordValidator,
+  updatePassword
+);
 module.exports = router;

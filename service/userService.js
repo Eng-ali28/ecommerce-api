@@ -6,6 +6,8 @@ const sharp = require("sharp");
 const slugify = require("slugify");
 const { v4: uuidv4 } = require("uuid");
 const ApiError = require("../utils/ApiError");
+const bcrypt = require("bcryptjs");
+const generateToken = require("../utils/generateToken");
 //@desc get all users
 //@route GET /api/v1/categroies?page=x&limit=x
 //@access Pubilc
@@ -78,9 +80,70 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
   const { id } = req.params;
   const user = await User.findById(id);
   user.password = req.newPassword;
+  user.passwordChangeTime = Date.now();
   const updateUser = await user.save();
   if (!updateUser) {
     next(new ApiError("password not updated", 400));
   }
   res.status(200).json({ msg: "password updated", resutl: updateUser });
+});
+
+// get logged user data
+
+// @ desc get logged user data by req.user._id
+// @ route PUT api/v1/loggeduser/getInfo
+// @ access Private
+
+exports.getLoggedUserInfo = asyncHandler(async (req, res, next) => {
+  req.params.id = req.user._id;
+  next();
+});
+// @desc update password logged user
+// @route PATCH api/v1/loggeduser/updatepassword
+// @access PRIVATE/PROTECT
+exports.updateLoggedUserPassword = asyncHandler(async (req, res, next) => {
+  const { newPassword } = req.body;
+  const user = await User.findOne({ _id: req.user._id });
+  user.password = newPassword;
+  const token = generateToken({ userId: user._id });
+  res.cookie("token", `bearer ${token}`, { httpOnly: true });
+  user.passwordChangeTime = Date.now();
+  await user.save();
+  res.status(200).json({ msg: "success update password", token });
+});
+
+// @desc update data for logged user (without password)
+// @route PUT api/v1/loggeduser/updatedata
+// @access PRIVATE/PROTECT
+exports.updateLoggeduserData = asyncHandler(async (req, res, next) => {
+  const updateUserData = await User.findByIdAndUpdate(req.user._id, req.body, {
+    new: true,
+  });
+
+  res.status(200).json({ result: updateUserData });
+});
+
+// @desc unactive account when delete
+// @route DELETE api/v1/loggeduser/deleteaccount
+// @access private/protect
+
+exports.deleteAccount = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  if (user.active) {
+    user.active = false;
+    await user.save();
+  } else {
+    return next(new ApiError("your account is not active.", 400));
+  }
+  res.status(200).json({ msg: "your accout not active now . " });
+});
+exports.activateAccount = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  if (!user.active) {
+    user.active = true;
+    await user.save();
+  } else {
+    return next(new ApiError("your account active .", 400));
+  }
+  res.status(200).json({ msg: "your accout active now . " });
 });

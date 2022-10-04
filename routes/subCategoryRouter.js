@@ -15,14 +15,30 @@ const {
   updateSubCategoryValidator,
   deleteSubCategoryValidator,
 } = require("../utils/validator/subCategoryValidator");
-
+const { protect, getRoles } = require("../service/authService");
 router
   .route("/")
-  .post(createSubcategoryMW, createSubCategoryValidator, createSubCategory)
+  .post(
+    protect,
+    getRoles("admin", "manager"),
+    createSubcategoryMW,
+    createSubCategoryValidator,
+    createSubCategory
+  )
   .get(getCategorymw, getAllSubCategories);
 router
   .route("/:id")
   .get(getSpecificSubCategoryValidator, getSpecificSubCategories)
-  .put(updateSubCategoryValidator, updateSubCategory)
-  .delete(deleteSubCategoryValidator, deleteSubCategory);
+  .put(
+    protect,
+    getRoles("admin", "manager"),
+    updateSubCategoryValidator,
+    updateSubCategory
+  )
+  .delete(
+    protect,
+    getRoles("admin"),
+    deleteSubCategoryValidator,
+    deleteSubCategory
+  );
 module.exports = router;

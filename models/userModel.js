@@ -25,8 +25,15 @@ const userSchema = new Schema(
     password: {
       type: String,
       required: [true, "password required"],
-      minlength: [6, "password too short !"],
-      maxlength: [56, "password too long ! "],
+      minlength: [8, "password too short !"],
+    },
+    passwordChangeTime: { type: Date, default: 0 },
+    passwordResetCode: String,
+    passwordResetExpire: Date,
+    passwordResetVerfiy: Boolean,
+    active: {
+      type: Boolean,
+      default: true,
     },
     role: {
       type: String,
@@ -44,7 +51,12 @@ function setImageUrl(doc) {
 userSchema.post("save", (doc) => setImageUrl(doc));
 userSchema.post("init", (doc) => setImageUrl(doc));
 userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    console.log("hello from modefied");
+    return next();
+  }
   const hashPassword = await bcrypt.hash(this.password, 12);
+  console.log("hello from not modefied");
   this.password = hashPassword;
   next();
 });
