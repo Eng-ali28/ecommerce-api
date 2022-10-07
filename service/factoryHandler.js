@@ -41,7 +41,7 @@ exports.createOne = (Model) =>
   asyncHandler(async (req, res, next) => {
     let document = await Model.create(req.body);
     if (!document) {
-      return next(new ApiError("your create brand faild", 500));
+      return next(new ApiError(`your create ${Model} faild`, 500));
     }
     res.status(201).json({ msg: "success create", document });
   });
