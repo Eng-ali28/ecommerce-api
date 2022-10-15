@@ -16,6 +16,8 @@ const {
   updateProductVM,
   deleteProductVM,
 } = require("../utils/validator/productValidator");
+const reviewRouter = require("./reviewRoute");
+router.use("/:productId/reviews", reviewRouter);
 const { protect, getRoles } = require("../service/authService");
 const { uploadMixImages } = require("../middleware/uploadImage");
 router
@@ -23,7 +25,7 @@ router
   .get(getAllProducts)
   .post(
     protect,
-    getRoles("admin", "manager"),
+       getRoles("admin", "manager"),
     uploadMixImages([
       { name: "imageCover", maxCount: 1 },
       { name: "images", maxCount: 5 },
@@ -38,5 +40,4 @@ router
   .get(specificProductVM, getSpecificProduct)
   .put(updateProductVM, updateProduct)
   .delete(deleteProductVM, deleteProduct);
-
 module.exports = router;

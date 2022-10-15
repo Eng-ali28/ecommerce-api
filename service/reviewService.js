@@ -2,9 +2,21 @@ const asyncHanlder = require("express-async-handler");
 const ApiError = require("../utils/ApiError");
 const factory = require("./factoryHandler");
 const Review = require("../models/reviewModel");
+const expressAsyncHandler = require("express-async-handler");
+exports.getProductId = (req, res, next) => {
+  let filterObj;
+  if (req.params.productId) filterObj = { product: req.params.productId };
+  req.filterObj = filterObj;
+  next();
+};
 // @desc    create review
 // @route   POST api/v1/review/
 // @access  Private/Protect
+exports.createMW = (req, res, next) => {
+  if (!req.body.product) req.body.product = req.params.productId;
+  req.body.user = req.user._id;
+  next();
+};
 exports.createReview = factory.createOne(Review);
 // @desc get all reviews
 // @route GET api/v1/review/

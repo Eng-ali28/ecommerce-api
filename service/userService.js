@@ -147,3 +147,41 @@ exports.activateAccount = asyncHandler(async (req, res, next) => {
   }
   res.status(200).json({ msg: "your accout active now . " });
 });
+
+// add address (street , city , country , zipcode)
+
+exports.addAddress = asyncHandler(async (req, res, next) => {
+  const user = await User.findByIdAndUpdate(
+    req.user._id,
+    {
+      $push: {
+        address: {
+          street: req.body.street,
+          city: req.body.city,
+          country: req.body.country,
+          postalCode: req.body.postalCode,
+        },
+      },
+    },
+    { new: true }
+  );
+  res.status(200).json({ user });
+});
+// get user addresses
+exports.getAddresses = asyncHandler(async (req, res, next) => {
+  const user = await User.findById(req.user._id);
+  res.status(200).json({ addresses: user.address });
+});
+// delete address
+exports.deleteAddress = asyncHandler(async (req, res, next) => {
+  const { addressId } = req.params;
+  const user = await User.findByIdAndUpdate(req.user._id, {
+    $pull: { address: { _id: addressId } },
+  });
+  if (!user) {
+    return next(
+      new ApiError(`there aren't any address with this ${addressId}`, 400)
+    );
+  }
+  res.status(204).json({});
+});

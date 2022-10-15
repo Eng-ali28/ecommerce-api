@@ -40,6 +40,25 @@ const userSchema = new Schema(
       enum: ["user", "admin"],
       default: "user",
     },
+    wishlist: [
+      {
+        type: String,
+      },
+    ],
+    // we can add alias like(home , work , company) and phone number
+    address: [
+      {
+        street: { type: String, trim: true },
+        city: { type: String, trim: true },
+        country: { type: String, trim: true },
+        postalCode: {
+          type: String,
+          trim: true,
+          minlength: [5, "zipcode is 5 diget"],
+          maxlength: [5, "zipcode is 5 diget"],
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

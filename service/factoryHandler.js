@@ -10,30 +10,19 @@ exports.deleteOne = (Model) =>
         new ApiError(`cant not delete document with this id ${id}`, 400)
       );
     }
+    document.remove();
     res.status(204).json({ msg: "Delete success", result: document });
   });
 
 exports.updateOne = (Model) =>
   asyncHandler(async (req, res, next) => {
-    const { category, slug } = req.body;
-    let document;
-    if (req.body.title) {
-      const { title } = req.body;
-      document = await Model.findByIdAndUpdate(
-        req.params.id,
-        { title, slug, category },
-        { new: true }
-      );
-    }
-    const { name } = req.body;
-    document = await Model.findByIdAndUpdate(
-      req.params.id,
-      { name, slug, category },
-      { new: true }
-    );
+    const document = await Model.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
     if (!document) {
       return next(new ApiError("something went error , faild update !", 400));
     }
+    document.save();
     res.status(203).json({ msg: "success update", data: document });
   });
 
@@ -46,10 +35,16 @@ exports.createOne = (Model) =>
     res.status(201).json({ msg: "success create", document });
   });
 
-exports.getOne = (Model) =>
+exports.getOne = (Model, populateOpt) =>
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const document = await Model.findById(id);
+    let query = Model.findById(id);
+    let document;
+    if (populateOpt) {
+      document = await query.populate(populateOpt);
+    } else {
+      document = await query;
+    }
     if (!document) {
       return next(
         new ApiError(`there are not document with this id : ${id}`, 404)

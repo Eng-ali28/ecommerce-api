@@ -38,4 +38,5 @@ router.patch(
   updatePasswordValidator,
   updatePassword
 );
+
 module.exports = router;

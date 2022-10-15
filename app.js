@@ -8,14 +8,6 @@ dotenv.config({
   path: "config.env",
 });
 
-const categoryRouter = require("./routes/categoryRouter");
-const subCategoryRouter = require("./routes/subCategoryRouter");
-const brandsRouter = require("./routes/brandRouter");
-const productRouter = require("./routes/productRoute");
-const userRouter = require("./routes/userRouter");
-const authRouter = require("./routes/authRouter");
-const loggeduserRouter = require("./routes/loggeduserRouter");
-const reviewRouter = require("./routes/reviewRoute");
 const connectToDatabase = require("./config/database");
 const ApiError = require("./utils/ApiError");
 const errorMiddleWare = require("./middleware/errorMiddleware");
@@ -33,14 +25,8 @@ if (process.env.NODE_ENV === "development") {
 app.use(cookieParser());
 
 //routes
-app.use("/api/v1/categories", categoryRouter);
-app.use("/api/v1/subcategories", subCategoryRouter);
-app.use("/api/v1/brands", brandsRouter);
-app.use("/api/v1/products", productRouter);
-app.use("/api/v1/users", userRouter);
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1/loggeduser", loggeduserRouter);
-app.use("/api/v1/review", reviewRouter);
+const mountRoute = require("./routes");
+mountRoute(app);
 app.all("*", (req, res, next) => {
   next(new ApiError(`this url not exists ${req.originalUrl}`, 404));
 });

@@ -24,6 +24,7 @@ exports.createVal = [
       const review = await Review.findOne({
         $and: [{ user: req.user._id }, { product: req.body.product }],
       });
+
       if (review) {
         return Promise.reject(
           new ApiError("user can put review ont time on the same product", 400)
@@ -50,7 +51,7 @@ exports.updateVal = [
           new ApiError("review with this id not exists", 400)
         );
       }
-      if (review.user.toString() !== req.user._id.toString()) {
+      if (review.user._id.toString() !== req.user._id.toString()) {
         return Promise.reject(
           new ApiError("you can update your specific review only.", 400)
         );
@@ -74,7 +75,7 @@ exports.deleteVal = [
       if (req.user.role !== "user") {
         return true;
       }
-      if (review.user.toString() !== req.user._id.toString()) {
+      if (review.user._id.toString() !== req.user._id.toString()) {
         return Promise.reject(
           new ApiError("you can delete your specific review only.", 400)
         );

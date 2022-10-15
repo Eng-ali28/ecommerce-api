@@ -69,7 +69,7 @@ exports.getAllProducts = asyncHandler(async (req, res, next) => {
 // @route   GET /api/v1/products/:id
 // @access  Public
 
-exports.getSpecificProduct = factory.getOne(Product);
+exports.getSpecificProduct = factory.getOne(Product, "reviews");
 
 // @desc    upadate product
 // @route   PUT /api/v1/products/:id

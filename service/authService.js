@@ -93,7 +93,6 @@ exports.protect = asyncHandler(async (req, res, next) => {
   }
   // step 5: check if user change his password after token create , if change it redirect to sign in
   const passwordChangeTime = parseInt(user.passwordChangeTime.getTime() / 1000); //here we convert Date time to timestamp for compare
-  console.log(passwordChangeTime, decode.iat);
   if (passwordChangeTime >= decode.iat) {
     res.clearCookie("token");
     return next(new ApiError("password has changed, please login", 401));

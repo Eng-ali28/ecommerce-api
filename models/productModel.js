@@ -73,8 +73,13 @@ const productSchema = new Schema(
       default: 1,
     },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
+productSchema.virtual("reviews", {
+  ref: "review",
+  foreignField: "product",
+  localField: "_id",
+});
 productSchema.pre(/^find/, function (next) {
   this.populate({
     path: "category",
