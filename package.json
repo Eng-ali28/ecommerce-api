@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "compression": "^1.7.4",
     "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
     "dotenv": "^16.0.1",
     "express": "^4.18.1",
     "express-async-handler": "^1.2.0",
@@ -24,6 +26,7 @@
     "path": "^0.12.7",
     "slugify": "^1.6.5",
     "smtp": "^0.1.4",
+    "stripe": "^10.14.0",
     "uuid": "^9.0.0"
   },
   "devDependencies": {

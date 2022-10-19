@@ -15,7 +15,8 @@ const cartSchema = new Schema(
       },
     ],
     totalPrice: { type: Number, default: 0 },
-    totalPriceAfterDiscount: Number,
+    totalPriceAfterDiscount: { type: Number, default: 0 },
+    isAppliedCoupon: { type: Boolean, default: false },
     user: {
       type: Schema.Types.ObjectId,
       ref: "user",

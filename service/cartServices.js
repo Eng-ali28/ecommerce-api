@@ -142,6 +142,7 @@ exports.applyCoupon = asyncHandler(async (req, res, next) => {
     (totalPrice * discount) / 100
   ).toFixed(2);
   cart.totalPriceAfterDiscount = totalPriceAfterDiscount;
+  cart.isAppliedCoupon = true;
   await cart.save();
   res.status(200).json({ status: "coupon applied", data: cart });
 });

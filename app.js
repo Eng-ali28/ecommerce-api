@@ -1,5 +1,4 @@
 const path = require("path");
-/* eslint-disable no-undef */
 const express = require("express");
 const dotenv = require("dotenv");
 const morgan = require("morgan");
@@ -7,7 +6,8 @@ const cookieParser = require("cookie-parser");
 dotenv.config({
   path: "config.env",
 });
-
+const cors = require("cors");
+const compression = require("compression");
 const connectToDatabase = require("./config/database");
 const ApiError = require("./utils/ApiError");
 const errorMiddleWare = require("./middleware/errorMiddleware");
@@ -18,6 +18,10 @@ connectToDatabase();
 const app = express();
 //middleware section
 app.use(express.json());
+//enable cors
+app.use(cors());
+//compress all response
+app.use(compression());
 app.use(express.static(path.join(__dirname, "uploads")));
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));

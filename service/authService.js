@@ -104,6 +104,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
 // @desc [admin , manager]
 exports.getRoles = (...roles) => {
   return asyncHandler(async (req, res, next) => {
+    console.log(roles);
     if (!roles.includes(req.user.role)) {
       return next(new ApiError("sorry, you can't access this route.", 403));
     }
